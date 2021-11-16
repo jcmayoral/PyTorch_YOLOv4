@@ -1,0 +1,9 @@
+# train and val datasets (image directory or *.txt file with image paths)
+train: 1fiftyone-v2/train.txt
+val: 1fiftyone-v2/val.txt
+test: 1fiftyone-v2/mixed.txt  
+
+# number of classes
+nc: 1
+# class names
+names: ['person']

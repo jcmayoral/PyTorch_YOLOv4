@@ -95,6 +95,7 @@ def output_to_target(output, width, height):
     for i, o in enumerate(output):
         if o is not None:
             for pred in o:
+                pred = [i.cpu() for i in pred]
                 box = pred[:4]
                 w = (box[2] - box[0]) / width
                 h = (box[3] - box[1]) / height
@@ -106,7 +107,6 @@ def output_to_target(output, width, height):
                 targets.append([i, cls, x, y, w, h, conf])
 
     return np.array(targets)
-
 
 def plot_images(images, targets, paths=None, fname='images.jpg', names=None, max_size=640, max_subplots=16):
     # Plot image grid with labels

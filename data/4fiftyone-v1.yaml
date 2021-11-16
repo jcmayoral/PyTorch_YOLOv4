@@ -1,0 +1,9 @@
+# train and val datasets (image directory or *.txt file with image paths)
+train: 4fiftyone/train.txt
+val: 4fiftyone/val.txt
+test: 4fiftyone/test.txt
+
+# number of classes
+nc: 4
+# class names
+names: ['Girl', 'Boy', 'Woman', 'Man']
