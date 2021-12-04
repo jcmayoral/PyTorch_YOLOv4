@@ -36,7 +36,7 @@ from utils.torch_utils import ModelEMA, select_device, intersect_dicts, torch_di
 logger = logging.getLogger(__name__)
 
 try:
-    import wandb
+    import wandbad
 except ImportError:
     wandb = None
     logger.info("Install Weights & Biases for experiment logging via 'pip install wandb' (recommended)")
@@ -120,7 +120,7 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
     # plot_lr_scheduler(optimizer, scheduler, epochs)
 
     # Logging
-    if wandb and wandb.run is None:
+    if False and wandb and wandb.run is None:
         opt.hyp = hyp  # add hyperparameters
         wandb_run = wandb.init(config=opt, resume="allow",
                                project='YOLOv4' if opt.project == 'runs/train' else Path(opt.project).stem,
@@ -182,6 +182,7 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
                                             hyp=hyp, augment=True, cache=opt.cache_images, rect=opt.rect,
                                             rank=rank, world_size=opt.world_size, workers=opt.workers)
     mlc = np.concatenate(dataset.labels, 0)[:, 0].max()  # max label class
+    print(mlc)
     nb = len(dataloader)  # number of batches
     assert mlc < nc, 'Label class %g exceeds nc=%g in %s. Possible class labels are 0-%g' % (mlc, nc, opt.data, nc - 1)
 

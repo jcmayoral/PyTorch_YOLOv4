@@ -90,6 +90,7 @@ def test(data,
     log_imgs, wandb = min(log_imgs, 100), None  # ceil
     try:
         import wandb  # Weights & Biases
+        wandb.init()
     except ImportError:
         log_imgs = 0
 
