@@ -69,6 +69,7 @@ def compute_loss(p, targets, model):  # predictions, targets, model
     # Define criteria
     BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.Tensor([h['cls_pw']])).to(device)
     BCEobj = nn.BCEWithLogitsLoss(pos_weight=torch.Tensor([h['obj_pw']])).to(device)
+    MSEcls = nn.MSELoss()
 
     # Class label smoothing https://arxiv.org/pdf/1902.04103.pdf eqn 3
     cp, cn = smooth_BCE(eps=0.0)
@@ -76,7 +77,8 @@ def compute_loss(p, targets, model):  # predictions, targets, model
     # Focal loss
     g = h['fl_gamma']  # focal loss gamma
     if g > 0:
-        BCEcls, BCEobj = FocalLoss(BCEcls, g), FocalLoss(BCEobj, g)
+        pass
+        #BCEcls, BCEobj = FocalLoss(BCEcls, g), FocalLoss(BCEobj, g)
 
     # Losses
     nt = 0  # number of targets
@@ -106,7 +108,8 @@ def compute_loss(p, targets, model):  # predictions, targets, model
             if model.nc > 1:  # cls loss (only if multiple classes)
                 t = torch.full_like(ps[:, 5:], cn, device=device)  # targets
                 t[range(n), tcls[i]] = cp
-                lcls += BCEcls(ps[:, 5:], t)  # BCE
+                #lcls += BCEcls(ps[:, 5:], t)  # BCE
+                lcls += MSEcls(ps[:, 5:], t)  # MSE
 
             # Append targets to text file
             # with open('targets.txt', 'a') as file:

@@ -89,7 +89,7 @@ def test(data,
     # Logging
     log_imgs, wandb = min(log_imgs, 100), None  # ceil
     try:
-        import wandb  # Weights & Biases
+        import wandba  # Weights & Biases
         wandb.init()
     except ImportError:
         log_imgs = 0
@@ -103,9 +103,9 @@ def test(data,
 
     seen = 0
     try:
-        names = model.names if hasattr(model, 'names') else model.module.names
+        names = lambda x: dict({x:str(x)})[x]   #model.names if hasattr(model, 'names') else model.module.names
     except:
-        names = load_classes(opt.names)
+        names = lambda x: dict({x:str(x)})[x] #load_classes(opt.names)
     coco91class = coco80_to_coco91_class()
     s = ('%20s' + '%12s' * 6) % ('Class', 'Images', 'Targets', 'P', 'R', 'mAP@.5', 'mAP@.5:.95')
     p, r, f1, mp, mr, map50, map, t0, t1 = 0., 0., 0., 0., 0., 0., 0., 0., 0.

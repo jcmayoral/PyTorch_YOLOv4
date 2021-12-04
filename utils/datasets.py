@@ -354,7 +354,8 @@ class LoadStreams:  # multiple IP or RTSP cameras
 
 class LoadImagesAndLabels(Dataset):  # for training/testing
     def __init__(self, path, img_size=640, batch_size=16, augment=False, hyp=None, rect=False, image_weights=False,
-                 cache_images=False, single_cls=False, stride=32, pad=0.0, rank=-1):
+                 cache_images=False, single_cls=False, stride=32, pad=0.0, rank=-1, endfile="raw"):
+        self.endfile = endfile
         self.img_size = img_size
         self.augment = augment
         self.hyp = hyp
@@ -367,11 +368,10 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
         def img2label_paths(img_paths):
             # Define label paths as a function of image paths
             sa, sb = os.sep + 'images' + os.sep, os.sep + 'labels' + os.sep  # /images/, /labels/ substrings
-            return [x.replace(sa, sb, 1).replace(x.split('.')[-1], 'txt') for x in img_paths]
+            return [x.replace(sa, sb, 1).replace(x.split('.')[-1], endfile) for x in img_paths]
 
         try:
             f = []  # image files
-            print (path)
             for p in path if isinstance(path, list) else [path]:
                 p = Path(p)  # os-agnostic
                 if p.is_dir():  # dir
@@ -384,7 +384,6 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
                 else:
                     raise Exception('%s does not exist' % p)
             self.img_files = sorted([x.replace('/', os.sep) for x in f if x.split('.')[-1].lower() in img_formats])
-            print (self.img_files)
             assert self.img_files, 'No images found'
         except Exception as e:
             raise Exception('Error loading data from %s: %s\nSee %s' % (path, e, help_url))
@@ -453,6 +452,8 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
                     nd += 1  # print('WARNING: duplicate rows in %s' % self.label_files[i])  # duplicate rows
                 if single_cls:
                     l[:, 0] = 0  # force dataset into single-class mode
+                if True:
+                    l[:,0] = l[:,0]/72.03597
                 self.labels[i] = l
                 nf += 1  # file found
 

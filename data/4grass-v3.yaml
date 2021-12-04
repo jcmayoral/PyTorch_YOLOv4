@@ -1,7 +1,7 @@
 # train and val datasets (image directory or *.txt file with image paths)
-train: 4grass-v2/simfiles_10000.txt
-val: 4grass-v2/files_nibioseptember_filtered.txt
-test: 4grass-v2/files_houses_filtered.txt  
+train: 4grass-v3/new_train.txt
+val: 4grass-v3/new_valid.txt
+test: 4grass-v3/new_valid.txt  
 
 # number of classes
 nc: 4
