@@ -108,8 +108,9 @@ def compute_loss(p, targets, model):  # predictions, targets, model
             if model.nc > 1:  # cls loss (only if multiple classes)
                 t = torch.full_like(ps[:, 5:], cn, device=device)  # targets
                 t[range(n), tcls[i]] = cp
-                #lcls += BCEcls(ps[:, 5:], t)  # BCE
-                lcls += MSEcls(ps[:, 5:], t)  # MSE
+                lcls += BCEcls(ps[:, 5:], t)  # BCE
+            if model.nc == 1:
+                lcls += MSEcls(tcls[i], ps[:,5])  # MSE
 
             # Append targets to text file
             # with open('targets.txt', 'a') as file:
@@ -164,7 +165,7 @@ def build_targets(p, targets, model):
         gwh = t[:, 4:6]  # grid wh
         gij = (gxy - offsets).long()
         gi, gj = gij.T  # grid xy indices
-
+        print ("class", c)
         # Append
         #indices.append((b, a, gj, gi))  # image, anchor, grid indices
         indices.append((b, a, gj.clamp_(0, gain[3] - 1), gi.clamp_(0, gain[2] - 1)))  # image, anchor, grid indices
