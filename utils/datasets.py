@@ -454,9 +454,10 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
                 assert (l[:, 1:] <= 1).all(), 'non-normalized or out of bounds coordinate labels: %s' % file
                 if np.unique(l, axis=0).shape[0] < l.shape[0]:  # duplicate rows
                     nd += 1  # print('WARNING: duplicate rows in %s' % self.label_files[i])  # duplicate rows
-                if single_cls:
+                if single_cls and not self.enable_regression:
                     l[:, 0] = 0  # force dataset into single-class mode
-                if self.enable_regression:
+                if self.enable_regression and single_cls:
+                    #l[:,0] = [i/self.distance_limit for i in l[:,0]]
                     l[:,0] = [min(1.0, i/self.distance_limit) for i in l[:,0]]
                 self.labels[i] = l
                 nf += 1  # file found

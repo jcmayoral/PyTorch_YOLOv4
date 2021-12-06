@@ -184,7 +184,8 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
     mlc = np.concatenate(dataset.labels, 0)[:, 0].max()  # max label class
     print(mlc)
     nb = len(dataloader)  # number of batches
-    assert mlc < nc, 'Label class %g exceeds nc=%g in %s. Possible class labels are 0-%g' % (mlc, nc, opt.data, nc - 1)
+    if False:
+        assert mlc < nc, 'Label class %g exceeds nc=%g in %s. Possible class labels are 0-%g' % (mlc, nc, opt.data, nc - 1)
 
     # Process 0
     if rank in [-1, 0]:
@@ -210,7 +211,10 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
             #     check_anchors(dataset, model=model, thr=hyp['anchor_t'], imgsz=imgsz)
 
     # Model parameters
-    hyp['cls'] *= nc / 80.  # scale coco-tuned hyp['cls'] to current dataset
+    print("nc1", nc)
+    nc = 1
+    print("nc2", nc)
+    hyp['cls'] *= nc / 40.  # scale coco-tuned hyp['cls'] to current dataset
     model.nc = nc  # attach number of classes to model
     model.hyp = hyp  # attach hyperparameters to model
     model.gr = 1.0  # iou loss ratio (obj_loss = 1.0 or iou)
