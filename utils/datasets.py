@@ -354,7 +354,9 @@ class LoadStreams:  # multiple IP or RTSP cameras
 
 class LoadImagesAndLabels(Dataset):  # for training/testing
     def __init__(self, path, img_size=640, batch_size=16, augment=False, hyp=None, rect=False, image_weights=False,
-                 cache_images=False, single_cls=False, stride=32, pad=0.0, rank=-1, endfile="raw"):
+                 cache_images=False, single_cls=False, stride=32, pad=0.0, rank=-1,
+                 endfile="raw", distance_limit = 15.0, enable_regression=True):
+        print("enable_regression ", enable_regression)
         self.endfile = endfile
         self.img_size = img_size
         self.augment = augment
@@ -364,6 +366,8 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
         self.mosaic = self.augment and not self.rect  # load 4 images at a time into a mosaic (only during training)
         self.mosaic_border = [-img_size // 2, -img_size // 2]
         self.stride = stride
+        self.distance_limit = distance_limit
+        self.enable_regression = enable_regression
 
         def img2label_paths(img_paths):
             # Define label paths as a function of image paths
@@ -452,8 +456,8 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
                     nd += 1  # print('WARNING: duplicate rows in %s' % self.label_files[i])  # duplicate rows
                 if single_cls:
                     l[:, 0] = 0  # force dataset into single-class mode
-                if True:
-                    l[:,0] = l[:,0]/72.03597
+                if self.enable_regression:
+                    l[:,0] = [min(1.0, i/self.distance_limit) for i in l[:,0]]
                 self.labels[i] = l
                 nf += 1  # file found
 

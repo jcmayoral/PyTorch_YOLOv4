@@ -24,6 +24,7 @@ matplotlib.use('Agg')  # for writing to files only
 
 
 def color_list():
+    return  [(255, 127, 14)]
     # Return first 10 plt colors as (r,g,b) https://stackoverflow.com/questions/51350872/python-from-color-name-to-rgb
     def hex2rgb(h):
         return tuple(int(h[1 + i:1 + i + 2], 16) for i in (0, 2, 4))
@@ -162,7 +163,8 @@ def plot_images(images, targets, paths=None, fname='images.jpg', names=None, max
                 cls = float(classes[j])
                 color = colors[0]#cls % len(colors)]
                 cls = names(cls) if names else cls
-                if labels or conf[j] > 0.25:  # 0.25 conf thresh
+                #print(cls, conf)
+                if labels or conf[j] > 0.25:  # DEFAULT 0.25 conf thresh
                     label = '%s' % cls if labels else '%s %.1f' % (cls, conf[j])
                     plot_one_box(box, mosaic, label=label, color=color, line_thickness=tl)
 
