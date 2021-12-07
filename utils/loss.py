@@ -165,7 +165,6 @@ def build_targets(p, targets, model):
         gwh = t[:, 4:6]  # grid wh
         gij = (gxy - offsets).long()
         gi, gj = gij.T  # grid xy indices
-        print ("class", c)
         # Append
         #indices.append((b, a, gj, gi))  # image, anchor, grid indices
         indices.append((b, a, gj.clamp_(0, gain[3] - 1), gi.clamp_(0, gain[2] - 1)))  # image, anchor, grid indices

@@ -154,6 +154,8 @@ def plot_images(images, targets, paths=None, fname='images.jpg', names=None, max
             classes = image_targets[:, 1].astype('float')
             labels = image_targets.shape[1] == 6  # labels if no conf column
             conf = None if labels else image_targets[:, 6]  # check for confidence presence (label vs pred)
+
+            """
             print ("TARGETS ", classes , "/n")
             print("conf ", conf, "/n")
             print("labels ", labels, "/n")
@@ -165,6 +167,7 @@ def plot_images(images, targets, paths=None, fname='images.jpg', names=None, max
             print ("bb3 ", image_targets[:,3])
             print ("obj ", image_targets[:,4])
             print ("Class", image_targets[:,5])
+            """
 
             boxes[[0, 2]] *= w
             boxes[[0, 2]] += block_x
@@ -174,7 +177,7 @@ def plot_images(images, targets, paths=None, fname='images.jpg', names=None, max
                 cls = float(classes[j])
                 color = colors[0]#cls % len(colors)]
                 cls = names(cls) if names else cls
-                print(cls, conf)
+                #print(cls, conf)
                 if labels or conf[j] > 0.25:  # DEFAULT 0.25 conf thresh
                     label = '%s' % cls if labels else '%s %.1f' % (cls, conf[j])
                     plot_one_box(box, mosaic, label=label, color=color, line_thickness=tl)
