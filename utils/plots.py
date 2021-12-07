@@ -60,7 +60,6 @@ def plot_one_box(x, img, color=None, label=None, line_thickness=None):
     cv2.rectangle(img, c1, c2, color, thickness=tl, lineType=cv2.LINE_AA)
     if label:
         tf = max(tl - 1, 1)  # font thickness
-        label = label.split(" ")[-1] #TODO
         t_size = cv2.getTextSize(label, 0, fontScale=tl / 3, thickness=tf)[0]
         c2 = c1[0] + t_size[0], c1[1] - t_size[1] - 3
         cv2.rectangle(img, c1, c2, color, -1, cv2.LINE_AA)  # filled
@@ -111,6 +110,7 @@ def output_to_target(output, width, height):
     return np.array(targets)
 
 def plot_images(images, targets, paths=None, fname='images.jpg', names=None, max_size=640, max_subplots=16, regression=False):
+    class_type = 'float' if regression else 'int'
     # Plot image grid with labels
 
     if isinstance(images, torch.Tensor):
@@ -151,7 +151,7 @@ def plot_images(images, targets, paths=None, fname='images.jpg', names=None, max
         if len(targets) > 0:
             image_targets = targets[targets[:, 0] == i]
             boxes = xywh2xyxy(image_targets[:, 2:6]).T
-            classes = image_targets[:, 1].astype('float')
+            classes = image_targets[:, 1].astype(class_type)
             labels = image_targets.shape[1] == 6  # labels if no conf column
             conf = None if labels else image_targets[:, 6]  # check for confidence presence (label vs pred)
 

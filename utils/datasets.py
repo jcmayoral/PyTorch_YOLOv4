@@ -354,11 +354,11 @@ class LoadStreams:  # multiple IP or RTSP cameras
 
 class LoadImagesAndLabels(Dataset):  # for training/testing
     def __init__(self, path, img_size=640, batch_size=16, augment=False, hyp=None, rect=False, image_weights=False,
-                 cache_images=False, single_cls=False, stride=32, pad=0.0, rank=-1,
-                 endfile="raw", distance_limit = 15.0, enable_regression=False):
+                 cache_images=False, single_cls=False, stride=32, pad=0.0, rank=-1, distance_limit = 15.0, enable_regression=False):
         print("enable_regression ", enable_regression, " distance limit ", distance_limit)
         print("enable_regression ", enable_regression, " distance limit ", distance_limit)
-        self.endfile = endfile
+        endfile = "raw" if enable_regression else "txt"
+
         self.img_size = img_size
         self.augment = augment
         self.hyp = hyp
@@ -459,6 +459,7 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
                     l[:, 0] = 0  # force dataset into single-class mode
                 if self.enable_regression and single_cls:
                     #l[:,0] = [i/self.distance_limit for i in l[:,0]]
+                    print ("aaaa")
                     l[:,0] = [min(1.0, i/self.distance_limit) for i in l[:,0]]
                 self.labels[i] = l
                 nf += 1  # file found
