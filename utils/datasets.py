@@ -355,7 +355,7 @@ class LoadStreams:  # multiple IP or RTSP cameras
 class LoadImagesAndLabels(Dataset):  # for training/testing
     def __init__(self, path, img_size=640, batch_size=16, augment=False, hyp=None, rect=False, image_weights=False,
                  cache_images=False, single_cls=False, stride=32, pad=0.0, rank=-1,
-                 endfile="raw", distance_limit = 15.0, enable_regression=True):
+                 endfile="raw", distance_limit = 15.0, enable_regression=False):
         print("enable_regression ", enable_regression, " distance limit ", distance_limit)
         print("enable_regression ", enable_regression, " distance limit ", distance_limit)
         self.endfile = endfile

@@ -110,7 +110,7 @@ def output_to_target(output, width, height):
 
     return np.array(targets)
 
-def plot_images(images, targets, paths=None, fname='images.jpg', names=None, max_size=640, max_subplots=16):
+def plot_images(images, targets, paths=None, fname='images.jpg', names=None, max_size=640, max_subplots=16, regression=False):
     # Plot image grid with labels
 
     if isinstance(images, torch.Tensor):
@@ -174,7 +174,7 @@ def plot_images(images, targets, paths=None, fname='images.jpg', names=None, max
             boxes[[1, 3]] *= h
             boxes[[1, 3]] += block_y
             for j, box in enumerate(boxes.T):
-                cls = float(classes[j])
+                cls = float(classes[j]) if regression else int(classes[j])
                 color = colors[0]#cls % len(colors)]
                 cls = names(cls) if names else cls
                 #print(cls, conf)
