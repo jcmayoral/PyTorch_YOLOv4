@@ -228,9 +228,9 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
     logger.info('Image sizes %g train, %g test\n'
                 'Using %g dataloader workers\nLogging results to %s\n'
                 'Starting training for %g epochs...' % (imgsz, imgsz_test, dataloader.num_workers, save_dir, epochs))
-    
+
     torch.save(model, wdir / 'init.pt')
-    
+
     for epoch in range(start_epoch, epochs):  # epoch ------------------------------------------------------------------
         model.train()
 
@@ -347,8 +347,8 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
             # Write
             with open(results_file, 'a') as f:
                 f.write(s + '%10.4g' * 7 % results + '\n')  # P, R, mAP@.5, mAP@.5-.95, val_loss(box, obj, cls)
-            if len(opt.name) and opt.bucket:
-                os.system('gsutil cp %s gs://%s/results/results%s.txt' % (results_file, opt.bucket, opt.name))
+            if len(opt.name2) and opt.bucket:
+                os.system('gsutil cp %s gs://%s/results/results%s.txt' % (results_file, opt.bucket, opt.name2))
 
             # Log
             tags = ['train/box_loss', 'train/obj_loss', 'train/cls_loss',  # train loss
@@ -424,7 +424,7 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
                     torch.save(ckpt, wdir / 'epoch_{:03d}.pt'.format(epoch))
                 if epoch >= (epochs-5):
                     torch.save(ckpt, wdir / 'last_{:03d}.pt'.format(epoch))
-                elif epoch >= 420: 
+                elif epoch >= 420:
                     torch.save(ckpt, wdir / 'last_{:03d}.pt'.format(epoch))
                 del ckpt
         # end epoch ----------------------------------------------------------------------------------------------------
@@ -432,7 +432,7 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
 
     if rank in [-1, 0]:
         # Strip optimizers
-        n = opt.name if opt.name.isnumeric() else ''
+        n = opt.name2 if opt.name2.isnumeric() else ''
         fresults, flast, fbest = save_dir / f'results{n}.txt', wdir / f'last{n}.pt', wdir / f'best{n}.pt'
         for f1, f2 in zip([wdir / 'last.pt', wdir / 'best.pt', results_file], [flast, fbest, fresults]):
             if f1.exists():
@@ -482,9 +482,12 @@ if __name__ == '__main__':
     parser.add_argument('--log-imgs', type=int, default=16, help='number of images for W&B logging, max 100')
     parser.add_argument('--workers', type=int, default=8, help='maximum number of dataloader workers')
     parser.add_argument('--project', default='runs/train', help='save to project/name')
-    parser.add_argument('--name', default='kitti-256', help='save to project/name')
+    parser.add_argument('--name2', type=str, default='grass', help='save to project/name')
     parser.add_argument('--exist-ok', action='store_true', help='existing project/name ok, do not increment')
     opt = parser.parse_args()
+
+
+    print("WTF", opt.name2)
 
     # Set DDP variables
     opt.total_batch_size = opt.batch_size
@@ -510,8 +513,8 @@ if __name__ == '__main__':
         opt.data, opt.cfg, opt.hyp = check_file(opt.data), check_file(opt.cfg), check_file(opt.hyp)  # check files
         assert len(opt.cfg) or len(opt.weights), 'either --cfg or --weights must be specified'
         opt.img_size.extend([opt.img_size[-1]] * (2 - len(opt.img_size)))  # extend to 2 sizes (train, test)
-        opt.name = 'evolve' if opt.evolve else opt.name
-        opt.save_dir = increment_path(Path(opt.project) / opt.name, exist_ok=opt.exist_ok | opt.evolve)  # increment run
+        opt.name2 = 'evolve' if opt.evolve else opt.name2
+        opt.save_dir = increment_path(Path(opt.project) / opt.name2, exist_ok=opt.exist_ok | opt.evolve)  # increment run
 
     # DDP mode
     device = select_device(opt.device, batch_size=opt.batch_size)
