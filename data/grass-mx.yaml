@@ -1,0 +1,9 @@
+# train and val datasets (image directory or *.txt file with image paths)
+train: 4grass-v3-mx/new_train.txt
+val: 4grass-v3-mx/new_valid.txt
+test: 4grass-v3-mx/september.txt  
+
+# number of classes
+nc: 4
+# class names
+names: ['Lethal', 'Danger', 'Warning', 'Safe']
