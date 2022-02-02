@@ -371,7 +371,7 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
 
         try:
             f = []  # image files
-            print (path)
+            #print (path)
             for p in path if isinstance(path, list) else [path]:
                 p = Path(p)  # os-agnostic
                 if p.is_dir():  # dir
@@ -384,7 +384,7 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
                 else:
                     raise Exception('%s does not exist' % p)
             self.img_files = sorted([x.replace('/', os.sep) for x in f if x.split('.')[-1].lower() in img_formats])
-            print (self.img_files)
+            #print (self.img_files)
             assert self.img_files, 'No images found'
         except Exception as e:
             raise Exception('Error loading data from %s: %s\nSee %s' % (path, e, help_url))
