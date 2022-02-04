@@ -11,7 +11,7 @@ def risk_loss(pred, target):
     ind = 0
 
     for i,j in zip(pred, target):
-        results[ind] = weights[i.int(),j.int()]
+        results[ind] = weights[i.int(),j.int()] * torch.abs(i-j)
         ind +=1
 
     loss = torch.sum(results)/pred.size(0)

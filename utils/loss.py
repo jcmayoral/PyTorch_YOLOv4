@@ -71,7 +71,7 @@ def compute_loss(p, targets, model):  # predictions, targets, model
     # Define criteria
     BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.Tensor([h['cls_pw']])).to(device)
     BCEobj = nn.BCEWithLogitsLoss(pos_weight=torch.Tensor([h['obj_pw']])).to(device)
-    MSEcls = nn.MSELoss(reduction='sum').to(device)
+    #MSEcls = nn.MSELoss(reduction='sum').to(device)
 
     # Class label smoothing https://arxiv.org/pdf/1902.04103.pdf eqn 3
     cp, cn = smooth_BCE(eps=0.0)
@@ -110,8 +110,8 @@ def compute_loss(p, targets, model):  # predictions, targets, model
                 t = torch.full_like(ps[:, 5:], cn, device=device)  # targets
                 t[range(n), tcls[i]] = cp
                 lcls += BCEcls(ps[:, 5:], t)  # BCE
-                lcls_mse += MSEcls(torch.argmax(ps[:,5:], axis=1).float()/3, torch.argmax(t, axis=1).int()/3)  # MSE
-                lcls_risk += risk_loss(torch.argmax(ps[:,5:], axis=1).float()/3, torch.argmax(t, axis=1).int()/3)  # MSE
+                #lcls_mse += MSEcls(torch.argmax(ps[:,5:], axis=1).float()/3, torch.argmax(t, axis=1).int()/3)  # MSE
+                lcls_risk += risk_loss(torch.argmax(ps[:,5:], axis=1).float(), torch.argmax(t, axis=1).int())  # RISK
 
             # Append targets to text file
             # with open('targets.txt', 'a') as file:
@@ -123,13 +123,13 @@ def compute_loss(p, targets, model):  # predictions, targets, model
     lbox *= h['box'] * s
     lobj *= h['obj'] * s * (1.4 if no >= 4 else 1.)
     lcls *= h['cls'] * s
-    lcls_mse *= h['cls_mse'] * s
+    #lcls_mse *= h['cls_mse'] * s
     lcls_risk *= h['cls_risk'] * s
 
     bs = tobj.shape[0]  # batch size
 
-    loss = lbox + lobj + lcls + lcls_mse
-    return loss * bs, torch.cat((lbox, lobj, lcls, lcls_mse, lcls_risk, loss)).detach()
+    loss = lbox + lobj + lcls + lcls_risk
+    return loss * bs, torch.cat((lbox, lobj, lcls + lcls_risk, loss)).detach()
 
 
 def build_targets(p, targets, model):
