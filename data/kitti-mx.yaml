@@ -1,7 +1,7 @@
 # train and val datasets (image directory or *.txt file with image paths)
-train: 4kitti-mx/pedestrian_train.txt
-val: 4kitti-mx/pedestrian_valid.txt
-test: 4kitti-mx/pedestrian_valid.txt
+train: 4kitti-mx/pedestrian_train.txt.filter
+val: 4kitti-mx/pedestrian_valid.txt.filter
+test: 4kitti-mx/pedestrian_valid.txt.filter
 
 # number of classes
 nc: 4
